@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  app:
+    image: caio/flaskapp:latest  
+    command: python -u app.py
+    ports:
+      - "5000:5000"
+    volumes:
+      - app_data:/app
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+    networks:
+      - app_network
+
+  db:
+    image: mongo:latest
+    hostname: test_mongodb
+    environment:
+      - MONGO_INITDB_DATABASE=users
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 1G
+      restart_policy:
+        condition: on-failure
+    networks:
+      - app_network
+    volumes:
+      - db_data:/data/db
+
+networks:
+  app_network:
+    driver: overlay
+
+volumes:
+  app_data:
+    driver: local
+  db_data:
+    driver: local

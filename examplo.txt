@@ -1,0 +1,25 @@
+#antes vc precisa baixar o docker e o docker compose mas não sei como faz no windows
+
+docker-compose up --build #constroi e upa o compose
+
+http://localhost:5000/consultas # a rota pra por no postman com um GET pra buscar as consultas. Pra postar é só mudar pra post e colocar nas opcoes body raw e escrever esse json de baixo: 
+
+{
+    "assunto": "Suporte Técnico",
+    "descricao": "Preciso de ajuda para configurar o servidor.",
+    "data": "2024-08-05"
+}
+
+#Rodar o docker swarm
+
+docker swarm init
+
+docker build -t caio/flaskapp:latest . #constroi a imagem do flask
+
+docker stack deploy -c docker-stack.yml flask_stack
+
+docker service ls #lista os servicos
+
+curl http://localhost:5000/consultas // ou algum metodo de fazer requisição http no windows pelo terminal. mas primeiro teste no postman
+
+docker swarm leave --force #encerra o swarm
